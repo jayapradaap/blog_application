@@ -5,9 +5,16 @@ import logging
 from .models import Post, AboutUs
 from django.http import Http404
 from django.core.paginator import Paginator
-from .forms import ContactForm, Login, RegisterForm
+from .forms import ContactForm, ForgotPasswordForm, Login, RegisterForm
 from django.contrib import messages
-from django.contrib.auth import authenticate,login as auth_login
+from django.contrib.auth import authenticate,login as auth_login, logout as auth_logout
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 
 # Create your views here.
 '''
@@ -120,3 +127,35 @@ def login(request):
 def dashboard(request):
     blog_title = "My Posts"
     return render(request,"dashboard.html",{'title':blog_title})
+
+def logout(request):
+    auth_logout(request)
+    return redirect("blog:index")
+
+def forgot_password(request):
+    print("Step 1")
+    form = ForgotPasswordForm()
+    if request.method =='POST':
+       form = ForgotPasswordForm(request.POST)
+       
+       #This will check whether the form is valid or not
+       if form.is_valid():
+           email = form.cleaned_data['email']
+           user = User.objects.get(email=email)
+           token = default_token_generator.make_token(user)
+           uid = urlsafe_base64_encode(force_bytes(user.pk))
+           current_site = get_current_site(request)
+           domain = current_site.domain
+           subject = "Reset Password Requested"
+           message = render_to_string('reset_password_email.html',{
+               'domain' : domain,
+               'uid' : uid,
+               'token' : token
+           })
+           send_mail(subject,message,"noreply@examlple.com",[email])
+           messages.success(request,"The request mail has been sent")
+           
+    return render(request,"forgot_password.html",{'form':form})
+
+def reset_password(request):
+    pass

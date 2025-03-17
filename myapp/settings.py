@@ -51,6 +51,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'myapp.middleware.Redirectauthenticatedmiddleware',
+    'myapp.middleware.RestrictUnauthenticatedUserMiddleware',
+
+
 ]
 
 ROOT_URLCONF = 'myapp.urls'
@@ -146,3 +150,14 @@ LOGGING = {
         "level": "DEBUG",
     },
 }
+
+#Inorder to make the send_mail work properly
+#We should have all these configurations .So, the sending the mail will work without any issue
+
+DEFAULT_FROM_EMAIL ='your_mail@example.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = '8dd3c763f189aa'
+EMAIL_HOST_PASSWORD ='3c17b8f7713909'

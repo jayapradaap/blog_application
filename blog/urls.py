@@ -12,6 +12,9 @@ urlpatterns = [
     path("about",views.about,name="aboutus"),
     path("register",views.register,name="register"),
     path("login",views.login,name="login"),
-    path("dashboard",views.dashboard,name="dashboard")
+    path("dashboard",views.dashboard,name="dashboard"),
+    path("logout",views.logout,name="logout"),
+    path("forgot_password",views.forgot_password,name="forgot_password"),
+    path("reset_password/<uidb64>/<token>",views.reset_password,name="reset_password"),
 
 ]
