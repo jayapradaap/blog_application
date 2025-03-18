@@ -52,3 +52,15 @@ class ForgotPasswordForm(forms.Form):
         #If not this will raise an validation error
         if not User.objects.filter(email=email).exists():
             raise forms.ValidationError("User not found !")
+        
+class ResetPasswordForm(forms.Form):
+    new_password = forms.CharField(label='New Password',max_length=20,required=True)
+    confirm_password = forms.CharField(label='Confirm Password',max_length=20,required=True)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        if new_password and confirm_password and new_password != confirm_password:
+            raise forms.ValidationError("Password doesn't match!")

@@ -12,7 +12,7 @@
 
 <!--Non Field Errors-->
 {% for error in form.non_field_errors %}
-<div class="alert alert-danger">
+<div class="alert {% if error.tags == 'success' %} alert-success {% else %} alert-danger {% endif %}">
     <span class="text-danger">{{error}}</span>
 </div>
 {% endfor %}
@@ -20,8 +20,8 @@
 <!-- Success messages -->
  {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-success">
-                <span class="text-success">{{message}}</span> 
+        <div class="alert {% if message.tags == 'success' %} alert-success {% else %} alert-danger {% endif %}">
+                <span class="{% if message.tags == 'success' %}text-success {% else %} text-danger {% endif %}">{{message}}</span> 
         </div>
     {% endfor %}
  {% endif %}
