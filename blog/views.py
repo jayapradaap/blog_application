@@ -126,7 +126,14 @@ def login(request):
 
 def dashboard(request):
     blog_title = "My Posts"
-    return render(request,"dashboard.html",{'title':blog_title})
+    #Getting user posts. Based on the user_id
+    all_posts = Post.objects.filter(user=request.user)
+
+    #Paginate
+    paginator = Paginator(all_posts,3) #this will create a rule to maintain only three posts per page
+    page_number = request.GET.get('page') #this will fetch the page number from the request
+    page_obj = paginator.get_page(page_number) #this will designate or arrange the posts 
+    return render(request,"dashboard.html",{'title':blog_title,'page_obj':page_obj})
 
 def logout(request):
     auth_logout(request)
