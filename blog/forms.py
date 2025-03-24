@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
+from blog.models import Category, Post
+
 class ContactForm(forms.Form):
     name = forms.CharField(label="Name",max_length=100, required=True)
     email = forms.EmailField(label="Email",required=True)
@@ -64,3 +66,32 @@ class ResetPasswordForm(forms.Form):
 
         if new_password and confirm_password and new_password != confirm_password:
             raise forms.ValidationError("Password doesn't match!")
+
+class PostForm(forms.ModelForm):
+    title = forms.CharField(label="Title",max_length=250,required=True)
+    content = forms.CharField(label="Content",required=True)
+
+    #This particular field is from a separate model called category 
+    #Also This field has different choices
+    #Inorder to define that we have to use the the module called "ModelChoiceField"
+    #Also the field is from the model "Category" we have to use the object called "queryset="
+    #This "queryset=" will fetch all the data related to that particular model
+    #Before declaring the model name we have to import that model from the models.py
+    category = forms.ModelChoiceField(label="Category",required=True,queryset=Category.objects.all())
+    
+    class Meta():
+        #Below variables has to be in lowercase
+        model = Post
+        fields = ['title', 'content', 'category']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get('title')
+        content = cleaned_data.get('content')
+        category = cleaned_data.get('category')
+
+        if title and len(title) < 5:
+            raise forms.ValidationError("The length of the title must be greater than 5 characters!")
+        
+        if content and len(content) < 10:
+            raise forms.ValidationError("The length of the content must be greater than 10 characters!")

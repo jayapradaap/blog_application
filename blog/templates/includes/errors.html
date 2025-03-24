@@ -1,6 +1,6 @@
 <!--Field Errors-->
 {% for field in form %}
-<div class="col-12">
+<div class="alert {% if error.tags == 'success' %} alert-success {% else %} alert-danger {% endif %}">
     {% if field.errors %}
     <span class="fw-bold">{{ field.label_tag }}</span>
     {% for error in field.errors %}

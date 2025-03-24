@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse as response
 from django.urls import reverse 
 import logging
-from .models import Post, AboutUs
+from .models import Category, Post, AboutUs
 from django.http import Http404
 from django.core.paginator import Paginator
-from .forms import ContactForm, ForgotPasswordForm, Login, RegisterForm, ResetPasswordForm
+from .forms import ContactForm, ForgotPasswordForm, Login, PostForm, RegisterForm, ResetPasswordForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
@@ -185,3 +185,13 @@ def reset_password(request,uidb64,token):
                 messages.error(request,"The password reset link is invalid")
 
     return render(request,"reset_password.html",{'form':form})
+
+def new_post(request):
+    categories = Category.objects.all()
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save()
+            return redirect('blog:dashboard')
+    return render(request,'new_post.html',{'categories':categories,'form':form})
