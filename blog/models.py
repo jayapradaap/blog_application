@@ -14,7 +14,7 @@ class Post(models.Model):
 
     title = models.CharField(max_length=50)
     content = models.TextField()
-    image_url = models.URLField(null=True)
+    image_url = models.ImageField(null=True, upload_to="posts/images")
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True)
     category = models.ForeignKey(Category,on_delete=models.CASCADE)

@@ -190,7 +190,7 @@ def new_post(request):
     categories = Category.objects.all()
     form = PostForm()
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False) 
             #This will take the user id from the request and assign it to the variable user in the post form

@@ -78,11 +78,12 @@ class PostForm(forms.ModelForm):
     #This "queryset=" will fetch all the data related to that particular model
     #Before declaring the model name we have to import that model from the models.py
     category = forms.ModelChoiceField(label="Category",required=True,queryset=Category.objects.all())
+    image_url = forms.ImageField(label="Image",required=False)
     
     class Meta():
         #Below variables has to be in lowercase
         model = Post
-        fields = ['title', 'content', 'category']
+        fields = ['title', 'content', 'category', 'image_url']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -99,9 +100,15 @@ class PostForm(forms.ModelForm):
     def save(self, commit = ...):
         post = super().save(commit)
 
-        img_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/450px-No_image_available.svg.png"
+        cleaned_data = super().clean() #Fetches the image url if uploaded 
 
-        post.image_url = img_url
+        if cleaned_data.get('image_url'): #If true stores the retrieved url into post.image_url 
+            post.image_url = cleaned_data.get('image_url')
+        else:
+            #Stores the default image url
+            img_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/450px-No_image_available.svg.png"
+            post.image_url = img_url
+
         if commit:
             post.save()
         return post
