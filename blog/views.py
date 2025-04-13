@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse as response
 from django.urls import reverse 
 import logging
@@ -199,3 +199,8 @@ def new_post(request):
             post.save() #This will save the form again 
             return redirect('blog:dashboard')
     return render(request,'new_post.html',{'categories':categories,'form':form})
+
+def edit_post(request, post_id):
+    categories = Category.objects.all()
+    post = get_object_or_404(Post, id=post_id)
+    return render(request,'edit_post.html',{'categories':categories,'post':post})

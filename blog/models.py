@@ -23,6 +23,11 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super().save(*args,**kwargs)
+
+    @property
+    def formatted_img_url(self):
+        url = self.image_url if self.image_url.__str__().startswith(('http://','https://')) else self.image_url.url
+        return url
     
     def __str__(self):
         return self.title
