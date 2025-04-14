@@ -203,4 +203,20 @@ def new_post(request):
 def edit_post(request, post_id):
     categories = Category.objects.all()
     post = get_object_or_404(Post, id=post_id)
-    return render(request,'edit_post.html',{'categories':categories,'post':post})
+
+    #empty form
+    form = PostForm()
+    if request.method == 'POST':
+        #form
+        #This line will send the request to the post form, image file and the post data which we got from get_object_or_404.
+        form = PostForm(request.POST, request.FILES, instance=post)
+
+        #form validation
+        #if the form is valid then it will save the data and redirect the user to the dashboard
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Post data updated successfully !')
+            return redirect('blog:dashboard')
+        
+        
+    return render(request,'edit_post.html',{'categories':categories,'post':post,'form':form})

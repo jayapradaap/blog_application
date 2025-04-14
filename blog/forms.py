@@ -68,7 +68,7 @@ class ResetPasswordForm(forms.Form):
             raise forms.ValidationError("Password doesn't match!")
 
 class PostForm(forms.ModelForm):
-    title = forms.CharField(label="Title",max_length=250,required=True)
+    title = forms.CharField(label="Title",max_length=200,required=True)
     content = forms.CharField(label="Content",required=True)
 
     #This particular field is from a separate model called category 
